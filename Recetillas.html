@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Recetillas</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+body{
+	background-color:#D7D0B7
+}
+.topnav .search-container {
+  float:right;
+  width:27%;
+  display:inline-block;
+  padding-bottom:10px;
+}
+.check{
+	padding-top:10px;
+	width:73%;
+	display: inline-table;
+}
+.topnav input[type=text] {
+  padding: 6px;
+  margin-top: 8px;
+  font-size: 17px;
+  border-style: solid;
+    border-width: 1px;
+}
+
+.topnav .search-container button {
+  float: right;
+  padding: 6px 10px;
+  margin-top: 8px;
+  margin-right: 16px;
+  background: #ddd;
+  font-size: 17px;
+  border-style: solid;
+    border-width: 1px;
+  cursor: pointer;
+}
+.topnav .search-container button:hover {
+  background: #ccc;
+  }
+.topnav {
+	width:75%;
+	padding-bottom:5px;
+	background-color:#D3B8CA;
+	height:40px;
+}
+.Receta{
+	width:75%;
+	background-color:white;
+	color:black;
+	font-size:medium;
+	vertical-align:top;
+	 border-style: solid;
+    border-width: 1px;
+}
+.Cabecera{
+	background-color:#d6dee9;
+	height:30px;
+	padding-top:5px;
+	font-size:x-large;
+}
+.Imagen{
+	display:inline-block;
+	width:24%;
+	vertical-align:top;
+	padding-top:10px;
+	padding-bottom:10px;
+	background-color:white;
+}
+.Descripcion{
+	display:inline-block;
+	width:74%;
+	vertical-align:top;
+	padding-top:10px; 
+	padding-bottom:10px;
+	background-color:white;
+}
+@media (max-width: 800px){.Receta{width:100%;font-size:medium;}.search-container{width:100%;font-size:medium;}}
+@media (max-width: 525px){.Receta{width:100%;font-size:small;}.search-container{width:100%;font-size:small}};
+</style>
+<script>
+window.onload = function() {
+	alert('Necesitas la extension:Allow-Control-Allow-Origin para Chrome y CORS Everywhere para Firefox')
+	CrearVentana();
+};
+function CrearVentana() {
+ var opciones="left=100,top=100,"; 
+ opciones=opciones + "width=" + document.FORMULARIO[0].value +","; 
+ opciones=opciones + "height=" + document.FORMULARIO[1].value ;
+ ventana = window.open("","",opciones); //crea la ventana
+ ventana.document.write("ESTA ES LA VENTANA QUE SE HA CREADO");
+ }
+</script>
+</head>
+<body>
+<div align="center">
+	<div class="topnav">
+		<div class="check" align="left">
+			<label><input id="tendencia" value="tendencia" type="checkbox">Tendecia</label>
+			<label><input id="puntuacion" value="puntuacion" type="checkbox" checked>Puntuacion</label>&nbsp;&nbsp;
+			<label>Las busquedas se hacen en ingles</label>
+		</div>
+		<div class="search-container">
+		  <input id="busqueda" type="text" placeholder="Search.." name="search">
+		  <button id="buscar" type="submit"><i class="fa fa-search"></i></button>
+		</div>
+	</div>
+</div>
+</br>
+<div id="contenido">
+
+
+</div>
+
+<script>
+
+
+var xmlHttp = new XMLHttpRequest();
+var nRecetas
+xmlHttp.onreadystatechange = function() { 
+    if (xmlHttp.readyState == 4 && xmlHttp.status == 200){
+	
+        //callback(xmlHttp.responseText);
+		//document.getElementById("texto").innerHTML = xmlHttp.responseText;
+		var respuesta_json = xmlHttp.responseText;
+		object_json = eval("("+respuesta_json+")");
+		var divInsertar = "";
+ 
+			nRecetas=object_json.count;
+			divInsertar += "<div align='center'>";
+			divInsertar+="<button onclick='movimiento(0)' title='Ir al principio' id='Volver'><<</button>&nbsp;<button onclick='movimiento(1)' title='Anterior' id='Retroceder'><</button>&nbsp;"+'Pagina'+contPaginas+"&nbsp;<button onclick='movimiento(2)' title='Siguiente' id='Avanzar'>></button><br><br>"
+			for ( var i = 0; i < object_json.recipes.length; i++) {
+				
+				
+				
+				divInsertar += "<div class='Receta'>";
+				divInsertar +="<div class='Cabecera' align='left'><b>"+object_json.recipes[i].title+"</b>&nbsp;&nbsp;<b>Puntuacion:"+object_json.recipes[i].social_rank+"</b></div>"
+						+"<div class='Imagen'>" 
+						+"<img src='"+object_json.recipes[i].image_url+"' width='50%' height='50%'></img>"
+						+"</div>"
+						+"<div class='Descripcion' align='left'>"
+						+"<h3>Editor:"+object_json.recipes[i].publisher+"</h3>"
+						+"<a href='"+object_json.recipes[i].source_url+"' target='"+object_json.recipes[i].title+"'>Mostar pagina de la receta</a>"
+						+"<iframe name='"+object_json.recipes[i].title+"' height='300' width='100%' src=''></iframe><br>"
+						+"<button onclick='ingredientes(this.id)' id='"+object_json.recipes[i].recipe_id+"'>Solicitar ingredientes</button>"
+						+"<div id='"+object_json.recipes[i].recipe_id+"_contenido' style='display:none;'></div>"
+						+"</div>";
+				divInsertar += "</div> <br>";
+				
+			}
+			divInsertar+="<button onclick='movimiento(0)' title='Ir al principio' id='Volver'><<</button>&nbsp;<button onclick='movimiento(1)' title='Anterior' id='Retroceder'><</button>&nbsp;"+'Pagina'+contPaginas+"&nbsp;<button onclick='movimiento(2)' title='Siguiente' id='Avanzar'>></button>"
+			divInsertar += "</div> ";
+	}	
+		// carga de la tabla en pantalla
+		document.getElementById("contenido").innerHTML = divInsertar;
+		
+}
+
+var tipoEstandar="&sort=r";
+var cadenaBusqueda='';
+var contPaginas=1;
+var mov='&page=1';
+function movimiento(bt)
+{
+	mov='&page='
+	if(bt==0)
+	{
+		contPaginas=1
+		mov+=contPaginas
+	}
+	else if(bt==1)
+	{
+		if(contPaginas!=1)
+		{
+			contPaginas--
+			mov+=contPaginas
+		}
+		else
+		{
+			mov+=contPaginas
+		}
+		
+	}
+	else
+	{
+		if(nRecetas==30)
+		{
+			contPaginas++
+			mov+=contPaginas
+		}
+		
+	}
+	nuevaLLamada(tipoEstandar,cadenaBusqueda);
+}
+document.getElementById("tendencia").onclick=function()
+{
+	document.getElementById("puntuacion").checked=false;
+	tipoEstandar="&sort=t";
+	nuevaLLamada(tipoEstandar,cadenaBusqueda);
+}
+document.getElementById("puntuacion").onclick=function()
+{
+	document.getElementById("tendencia").checked=false;
+	tipoEstandar="&sort=r";
+	nuevaLLamada(tipoEstandar,cadenaBusqueda);
+}
+document.getElementById("buscar").onclick=function(){
+	cadenaBusqueda='&q='+document.getElementById("busqueda").value;
+	nuevaLLamada(tipoEstandar,cadenaBusqueda);
+	document.getElementById("busqueda").value='';
+}
+
+function nuevaLLamada(tipo, busq)
+{
+
+	var cadenaConexion="http://food2fork.com/api/search?key=26d46eec79786c5f166529d1ed728f8c"+tipo+mov;
+	
+	if(busq!='')
+	{
+		cadenaConexion+=busq;
+		
+	}
+	xmlHttp.open("GET", cadenaConexion, true); // true for asynchronous 
+	xmlHttp.send(null);
+	
+} 
+function ingredientes(idReceta)
+{	
+	//&rId=idReceta
+	if(document.getElementById(idReceta).firstChild.data=='Solicitar ingredientes')
+	{
+		var recetaText
+		var recetaHttp = new XMLHttpRequest();
+		var cadenaReceta="http://food2fork.com/api/get?key=26d46eec79786c5f166529d1ed728f8c&rId="+idReceta;
+		recetaHttp.open("GET", cadenaReceta, true); // true for asynchronous 
+		recetaHttp.send(null);
+		recetaHttp.onreadystatechange = function() { 
+			if (recetaHttp.readyState == 4 && recetaHttp.status == 200){
+				var respuesta_json = recetaHttp.responseText;
+					object_json = eval("("+respuesta_json+")");
+					recetaText='';
+					for ( var i = 0; i < object_json.recipe.ingredients.length; i++) 
+					{
+						recetaText+=object_json.recipe.ingredients[i]+'<br/>';
+						
+					}
+					document.getElementById(idReceta+'_contenido').innerHTML = recetaText;
+					document.getElementById(idReceta+'_contenido').style.display='block';
+					document.getElementById(idReceta).firstChild.data='Ocultar ingredientes';
+			}
+			
+		}
+	}
+	else if(document.getElementById(idReceta).firstChild.data=='Ocultar ingredientes')
+	{
+		document.getElementById(idReceta+'_contenido').style.display='none';
+		document.getElementById(idReceta).firstChild.data='Mostrar ingredientes';
+	}
+	else
+	{
+		document.getElementById(idReceta+'_contenido').style.display='block';
+		document.getElementById(idReceta).firstChild.data='Ocultar ingredientes';
+	}
+
+}
+
+xmlHttp.open("GET", "http://food2fork.com/api/search?key=26d46eec79786c5f166529d1ed728f8c", true); // true for asynchronous 
+xmlHttp.send(null);
+
+
+//page maximo: 4854
+//total recetas : 145.591
+</script>
+</body>
+
+</html>
