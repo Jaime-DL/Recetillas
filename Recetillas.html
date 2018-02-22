@@ -205,7 +205,7 @@ document.getElementById("buscar").onclick=function(){
 function nuevaLLamada(tipo, busq)
 {
 
-	var cadenaConexion="http://food2fork.com/api/search?key=26d46eec79786c5f166529d1ed728f8c"+tipo+mov;
+	var cadenaConexion="https://food2fork.com/api/search?key=26d46eec79786c5f166529d1ed728f8c"+tipo+mov;
 	
 	if(busq!='')
 	{
@@ -223,7 +223,7 @@ function ingredientes(idReceta)
 	{
 		var recetaText
 		var recetaHttp = new XMLHttpRequest();
-		var cadenaReceta="http://food2fork.com/api/get?key=26d46eec79786c5f166529d1ed728f8c&rId="+idReceta;
+		var cadenaReceta="https://food2fork.com/api/get?key=26d46eec79786c5f166529d1ed728f8c&rId="+idReceta;
 		recetaHttp.open("GET", cadenaReceta, true); // true for asynchronous 
 		recetaHttp.send(null);
 		recetaHttp.onreadystatechange = function() { 
@@ -256,7 +256,7 @@ function ingredientes(idReceta)
 
 }
 
-xmlHttp.open("GET", "http://food2fork.com/api/search?key=26d46eec79786c5f166529d1ed728f8c", true); // true for asynchronous 
+xmlHttp.open("GET", "https://food2fork.com/api/search?key=26d46eec79786c5f166529d1ed728f8c", true); // true for asynchronous 
 xmlHttp.send(null);
 
 
