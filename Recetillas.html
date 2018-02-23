@@ -80,9 +80,6 @@ body{
 @media (max-width: 800px){.Receta{width:100%;font-size:medium;}.search-container{width:100%;font-size:medium;}}
 @media (max-width: 525px){.Receta{width:100%;font-size:small;}.search-container{width:100%;font-size:small}};
 </style>
-<script>
-
-</script>
 </head>
 <body>
 <div align="center">
@@ -132,8 +129,8 @@ xmlHttp.onreadystatechange = function() {
 						+"</div>"
 						+"<div class='Descripcion' align='left'>"
 						+"<h3>Editor:"+object_json.recipes[i].publisher+"</h3>"
-						+"<a href='"+object_json.recipes[i].source_url+"' target='"+object_json.recipes[i].title+"'>Mostar pagina de la receta</a>"
-						+"<iframe name='"+object_json.recipes[i].title+"' height='300' width='100%' src=''></iframe><br>"
+						+"<a id='"+i+"' href='"+object_json.recipes[i].source_url+"' target='"+object_json.recipes[i].title+"' onclick='tratarPagina(this.id);'>Mostrar la página de la receta</a><br/>"
+						+"<iframe id='pagina"+i+"' name='"+object_json.recipes[i].title+"' height='300' width='100%' src='' style='display:none;'></iframe><br/>"
 						+"<button onclick='ingredientes(this.id)' id='"+object_json.recipes[i].recipe_id+"'>Solicitar ingredientes</button>"
 						+"<div id='"+object_json.recipes[i].recipe_id+"_contenido' style='display:none;'></div>"
 						+"</div>";
@@ -143,7 +140,7 @@ xmlHttp.onreadystatechange = function() {
 			divInsertar+="<button onclick='movimiento(0)' title='Ir al principio' id='Volver'><<</button>&nbsp;<button onclick='movimiento(1)' title='Anterior' id='Retroceder'><</button>&nbsp;"+'Pagina'+contPaginas+"&nbsp;<button onclick='movimiento(2)' title='Siguiente' id='Avanzar'>></button>"
 			divInsertar += "</div> ";
 	}	
-		// carga de la tabla en pantalla
+		// carga de la receta en pantalla
 		document.getElementById("contenido").innerHTML = divInsertar;
 		
 }
@@ -152,6 +149,7 @@ var tipoEstandar="&sort=r";
 var cadenaBusqueda='';
 var contPaginas=1;
 var mov='&page=1';
+//Moverse entre las paginas de las recetas
 function movimiento(bt)
 {
 	mov='&page='
@@ -201,11 +199,11 @@ document.getElementById("buscar").onclick=function(){
 	nuevaLLamada(tipoEstandar,cadenaBusqueda);
 	document.getElementById("busqueda").value='';
 }
-
+//LLamadas a las distintas recetas segun el orden , el nombre o el numero de la pagina
 function nuevaLLamada(tipo, busq)
 {
 
-	var cadenaConexion="https://food2fork.com/api/search?key=26d46eec79786c5f166529d1ed728f8c"+tipo+mov;
+	var cadenaConexion="http://food2fork.com/api/search?key=26d46eec79786c5f166529d1ed728f8c"+tipo+mov;
 	
 	if(busq!='')
 	{
@@ -215,7 +213,8 @@ function nuevaLLamada(tipo, busq)
 	xmlHttp.open("GET", cadenaConexion, true); // true for asynchronous 
 	xmlHttp.send(null);
 	
-} 
+}
+//Traer los igredientes desde la api 
 function ingredientes(idReceta)
 {	
 	//&rId=idReceta
@@ -223,7 +222,7 @@ function ingredientes(idReceta)
 	{
 		var recetaText
 		var recetaHttp = new XMLHttpRequest();
-		var cadenaReceta="https://food2fork.com/api/get?key=26d46eec79786c5f166529d1ed728f8c&rId="+idReceta;
+		var cadenaReceta="http://food2fork.com/api/get?key=26d46eec79786c5f166529d1ed728f8c&rId="+idReceta;
 		recetaHttp.open("GET", cadenaReceta, true); // true for asynchronous 
 		recetaHttp.send(null);
 		recetaHttp.onreadystatechange = function() { 
@@ -255,13 +254,24 @@ function ingredientes(idReceta)
 	}
 
 }
+//Mostrar la pagina de la receta
+function tratarPagina(id){
+	var tipoDisplay=document.getElementById("pagina"+id).style.display;
 
-xmlHttp.open("GET", "https://food2fork.com/api/search?key=26d46eec79786c5f166529d1ed728f8c", true); // true for asynchronous 
+	if(tipoDisplay=="none"){
+		document.getElementById("pagina"+id).style.display='block';
+		document.getElementById(id).firstChild.data='Ocultar receta';
+	}else{
+		document.getElementById("pagina"+id).style.display='none';
+		document.getElementById(id).firstChild.data='Mostrar receta';
+	}
+}
+
+xmlHttp.open("GET", "http://food2fork.com/api/search?key=26d46eec79786c5f166529d1ed728f8c", true); // true for asynchronous 
 xmlHttp.send(null);
 
 
-//page maximo: 4854
-//total recetas : 145.591
+
 </script>
 </body>
 
